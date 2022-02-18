@@ -40,7 +40,7 @@ def listenForEvents():
                             sendMessageWithAttachment(chat_id, 'душно, відкрийте форточку', arkadiy[arkadiy_gif])
                         elif 'алим' in msg:
                             sendMessage(chat_id, 'Алим - хороший человек.')
-                        elif 'аркадий' in msg or 'аркаша':
+                        elif 'аркадий' in msg or 'аркаша' in msg:
                             sendMessage(chat_id, 'Аркадий - нехороший человек. То ли дело Алим!')
                         elif 'окуму' in msg:
                             okumu = random.randint(0, 1)
