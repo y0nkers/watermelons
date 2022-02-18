@@ -4,7 +4,7 @@ import random
 from datetime import datetime, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 from config import api_token, group_id
-from files import arkadiy, watermelons
+from files import arkadiy, special_watermelons, watermelons
 
 session = vk_api.VkApi(token = api_token)
 longpoll = VkBotLongPoll(session, group_id)
@@ -14,15 +14,15 @@ chat_id = -1
 
 def get_name(uid: int) -> str:
     data = session.method("users.get", {"user_ids": uid})[0]
-    return "{} {}".format(data["first_name"], data["last_name"])
+    return "{}".format(data["first_name"])
 
 
-def sendMsg(id, text):
+def sendMessage(id, text):
     session.method('messages.send', {'chat_id': id, 'message': text, 'random_id': 0})
 
 
-def sendWatermelon(id, text, watermelon_to_send):
-    session.method('messages.send', {'chat_id': id, 'message': text, 'attachment': watermelon_to_send, "random_id": 0})
+def sendMessageWithAttachment(id, text, attachment):
+    session.method('messages.send', {'chat_id': id, 'message': text, 'attachment': attachment, "random_id": 0})
 
 
 def listenForEvents():
@@ -35,17 +35,23 @@ def listenForEvents():
                         chat_id = event.chat_id
                         user = event.object.message['from_id']
                         msg = event.object.message['text'].lower()
-                        if "алим" in msg:
-                            sendMsg(chat_id, 'Алим - хороший человек.')
-                        elif "аркадий" in msg:
-                            sendMsg(chat_id, 'бебра')
-                        elif msg == 'хочу арбуз' or msg == 'хачу арбуз' or msg == 'хачю арбуз':
-                            if user == 143409911:
-                                sendWatermelon(chat_id, 'Перехочешь, Аркадий', arkadiy)
-                            else:
-                                watermelon = random.randint(0, len(watermelons) - 1)
-                                sendWatermelon(chat_id, f'Держи арбуз, [id{user}|{get_name(user)}]',
-                                               watermelons[watermelon])
+                        if user == 143409911:
+                            arkadiy_gif = random.randint(0, len(arkadiy) - 1)
+                            sendMessageWithAttachment(chat_id, 'душно, відкрийте форточку', arkadiy[arkadiy_gif])
+                        elif 'алим' in msg:
+                            sendMessage(chat_id, 'Алим - хороший человек.')
+                        elif 'аркадий' in msg or 'аркаша':
+                            sendMessage(chat_id, 'Аркадий - нехороший человек. То ли дело Алим!')
+                        elif 'окуму' in msg:
+                            okumu = random.randint(0, 1)
+                            sendMessageWithAttachment(chat_id, 'Black Watermelons Matter 🍉', special_watermelons[okumu])
+                        elif 'бебра' in msg or 'беброчка' in msg:
+                            sendMessageWithAttachment(chat_id, 'BEBRE', special_watermelons[2])
+                        elif 'артур' in msg:
+                            sendMessageWithAttachment(chat_id, '🦄 🍉', special_watermelons[3])
+                        elif 'хочу арбуз' in msg or 'хачу арбуз' in msg or 'хачю арбуз' in msg:
+                            watermelon = random.randint(0, len(watermelons) - 1)
+                            sendMessageWithAttachment(chat_id, f'Держи арбуз, [id{user}|{get_name(user)}] 🍉', watermelons[watermelon])
                         elif msg == '!арбуз' and not isScheduled:
                             isScheduled = True
         except Exception as e:
@@ -56,21 +62,21 @@ def jobMorning():
     global chat_id
     arbuz = random.randint(0, len(watermelons) - 1)
     if chat_id != -1:
-        sendWatermelon(chat_id, 'Доброе утро! 🍉', watermelons[arbuz])
+        sendMessageWithAttachment(chat_id, 'Доброе утро! Держи арбуз 🍉', watermelons[arbuz])
 
 
 def jobDay():
     global chat_id
     arbuz = random.randint(0, len(watermelons) - 1)
     if chat_id != -1:
-        sendWatermelon(chat_id, 'Добрый день! 🍉', watermelons[arbuz])
+        sendMessageWithAttachment(chat_id, 'Добрый день! Держи арбуз 🍉', watermelons[arbuz])
 
 
 def jobEvening():
     global chat_id
     arbuz = random.randint(0, len(watermelons) - 1)
     if chat_id != -1:
-        sendWatermelon(chat_id, 'Добрый вечер! 🍉', watermelons[arbuz])
+        sendMessageWithAttachment(chat_id, 'Добрый вечер! Держи арбуз 🍉', watermelons[arbuz])
 
 def main():
     today = datetime.today()
