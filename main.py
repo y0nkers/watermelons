@@ -58,25 +58,12 @@ def listenForEvents():
             pass
 
 
-def jobMorning():
+def job():
     global chat_id
     arbuz = random.randint(0, len(watermelons) - 1)
     if chat_id != -1:
-        sendMessageWithAttachment(chat_id, 'Доброе утро! Держи арбуз 🍉', watermelons[arbuz])
+        sendMessageWithAttachment(chat_id, 'Привет! Держи арбуз 🍉', watermelons[arbuz])
 
-
-def jobDay():
-    global chat_id
-    arbuz = random.randint(0, len(watermelons) - 1)
-    if chat_id != -1:
-        sendMessageWithAttachment(chat_id, 'Добрый день! Держи арбуз 🍉', watermelons[arbuz])
-
-
-def jobEvening():
-    global chat_id
-    arbuz = random.randint(0, len(watermelons) - 1)
-    if chat_id != -1:
-        sendMessageWithAttachment(chat_id, 'Добрый вечер! Держи арбуз 🍉', watermelons[arbuz])
 
 def main():
     today = datetime.today()
@@ -84,19 +71,19 @@ def main():
     delta = newTime - today
     secs = delta.total_seconds()
     scheduler1 = BackgroundScheduler()
-    scheduler1.add_job(jobMorning, 'interval', seconds = secs)
+    scheduler1.add_job(job, 'interval', seconds = secs)
     scheduler1.start()
     newTime = today.replace(day = today.day, hour = 14, minute = 0, second = 0, microsecond = 0) + timedelta(days = 1)
     delta = newTime - today
     secs = delta.total_seconds()
     scheduler2 = BackgroundScheduler()
-    scheduler2.add_job(jobDay, 'interval', seconds = secs)
+    scheduler2.add_job(job, 'interval', seconds = secs)
     scheduler2.start()
     newTime = today.replace(day = today.day, hour = 18, minute = 0, second = 0, microsecond = 0) + timedelta(days = 1)
     delta = newTime - today
     secs = delta.total_seconds()
     scheduler3 = BackgroundScheduler()
-    scheduler3.add_job(jobEvening, 'interval', seconds = secs)
+    scheduler3.add_job(job, 'interval', seconds = secs)
     scheduler3.start()
 
     listenForEvents()
