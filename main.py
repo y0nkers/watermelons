@@ -8,7 +8,6 @@ from files import arkadiy, special_watermelons, watermelons
 
 session = vk_api.VkApi(token = api_token)
 longpoll = VkBotLongPoll(session, group_id)
-isScheduled = False
 chat_id = -1
 
 
@@ -26,7 +25,7 @@ def sendMessageWithAttachment(id, text, attachment):
 
 
 def listenForEvents():
-    global isScheduled, chat_id
+    global chat_id
     while True:
         try:
             for event in longpoll.listen():
@@ -35,10 +34,8 @@ def listenForEvents():
                         chat_id = event.chat_id
                         user = event.object.message['from_id']
                         msg = event.object.message['text'].lower()
-                        if user == 143409911:
-                            arkadiy_gif = random.randint(0, len(arkadiy) - 1)
-                            sendMessageWithAttachment(chat_id, 'душно, відкрийте форточку', arkadiy[arkadiy_gif])
-                        elif 'алим' in msg:
+
+                        if 'алим' in msg:
                             sendMessage(chat_id, 'Алим - хороший человек.')
                         elif 'аркадий' in msg or 'аркаша' in msg:
                             sendMessage(chat_id, 'Аркадий - нехороший человек. То ли дело Алим!')
@@ -52,8 +49,6 @@ def listenForEvents():
                         elif 'хочу арбуз' in msg or 'хачу арбуз' in msg or 'хачю арбуз' in msg:
                             watermelon = random.randint(0, len(watermelons) - 1)
                             sendMessageWithAttachment(chat_id, f'Держи арбуз, [id{user}|{get_name(user)}] 🍉', watermelons[watermelon])
-                        elif msg == '!арбуз' and not isScheduled:
-                            isScheduled = True
         except Exception as e:
             pass
 
