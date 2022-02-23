@@ -1,13 +1,13 @@
 import vk_api
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 import random
-from datetime import datetime, timedelta
-from apscheduler.schedulers.background import BackgroundScheduler
-from config import api_token, group_id
-from files import arkadiy, special_watermelons, watermelons
+# from datetime import datetime, timedelta
+# from apscheduler.schedulers.background import BackgroundScheduler
+import config
+import files
 
-session = vk_api.VkApi(token = api_token)
-longpoll = VkBotLongPoll(session, group_id)
+session = vk_api.VkApi(token = config.api_token)
+longpoll = VkBotLongPoll(session, config.group_id)
 chat_id = -1
 
 
@@ -37,50 +37,23 @@ def listenForEvents():
 
                         if 'алим' in msg:
                             sendMessage(chat_id, 'Алим - хороший человек.')
-                        elif 'аркадий' in msg or 'аркаша' in msg:
-                            sendMessage(chat_id, 'Аркадий - нехороший человек. То ли дело Алим!')
+                        # elif 'аркадий' in msg or 'аркаша' in msg:
+                        #     sendMessage(chat_id, 'Аркадий - нехороший человек. То ли дело Алим!')
                         elif 'окуму' in msg:
                             okumu = random.randint(0, 1)
-                            sendMessageWithAttachment(chat_id, 'Black Watermelons Matter 🍉', special_watermelons[okumu])
+                            sendMessageWithAttachment(chat_id, 'Black Watermelons Matter 🍉', files.special_watermelons[okumu])
                         elif 'бебра' in msg or 'беброчка' in msg:
-                            sendMessageWithAttachment(chat_id, 'BEBRE', special_watermelons[2])
+                            sendMessageWithAttachment(chat_id, 'BEBRE', files.special_watermelons[2])
                         elif 'артур' in msg:
-                            sendMessageWithAttachment(chat_id, '🦄 🍉', special_watermelons[3])
+                            sendMessageWithAttachment(chat_id, '🦄 🍉', files.special_watermelons[3])
                         elif 'хочу арбуз' in msg or 'хачу арбуз' in msg or 'хачю арбуз' in msg:
-                            watermelon = random.randint(0, len(watermelons) - 1)
-                            sendMessageWithAttachment(chat_id, f'Держи арбуз, [id{user}|{get_name(user)}] 🍉', watermelons[watermelon])
+                            watermelon = random.randint(0, len(files.watermelons) - 1)
+                            sendMessageWithAttachment(chat_id, f'Держи арбуз, [id{user}|{get_name(user)}] 🍉', files.watermelons[watermelon])
         except Exception as e:
             pass
 
 
-def job():
-    global chat_id
-    arbuz = random.randint(0, len(watermelons) - 1)
-    if chat_id != -1:
-        sendMessageWithAttachment(chat_id, 'Привет! Держи арбуз 🍉', watermelons[arbuz])
-
-
 def main():
-    today = datetime.today()
-    newTime = today.replace(day = today.day, hour = 10, minute = 0, second = 0, microsecond = 0) + timedelta(days = 1)
-    delta = newTime - today
-    secs = delta.total_seconds()
-    scheduler1 = BackgroundScheduler()
-    scheduler1.add_job(job, 'interval', seconds = secs)
-    scheduler1.start()
-    newTime = today.replace(day = today.day, hour = 14, minute = 0, second = 0, microsecond = 0) + timedelta(days = 1)
-    delta = newTime - today
-    secs = delta.total_seconds()
-    scheduler2 = BackgroundScheduler()
-    scheduler2.add_job(job, 'interval', seconds = secs)
-    scheduler2.start()
-    newTime = today.replace(day = today.day, hour = 18, minute = 0, second = 0, microsecond = 0) + timedelta(days = 1)
-    delta = newTime - today
-    secs = delta.total_seconds()
-    scheduler3 = BackgroundScheduler()
-    scheduler3.add_job(job, 'interval', seconds = secs)
-    scheduler3.start()
-
     listenForEvents()
 
 
